@@ -6,6 +6,7 @@
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
 
 #define BUTTON 2
+#define EFFECTS 13
 byte selectedEffect=0;
 
 void setup()
@@ -14,16 +15,13 @@ void setup()
   strip.show(); // Initialize all pixels to 'off'
   pinMode(2,INPUT_PULLUP);  // internal pull-up resistor
   attachInterrupt (digitalPinToInterrupt (BUTTON), changeEffect, CHANGE); // pressed
+
+  randomSeed(analogRead(0));
 }
 
 // *** REPLACE FROM HERE ***
 void loop() {
-  EEPROM.get(0,selectedEffect); 
-  
-  if(selectedEffect>18) { 
-    selectedEffect=0;
-    EEPROM.put(0,0); 
-  } 
+  selectedEffect =  random(EFFECTS);
 
   // Show effect num
   //for (int i=0; i<=selectedEffect ; i++) {
@@ -131,8 +129,6 @@ void loop() {
 
 void changeEffect() {
   if (digitalRead (BUTTON) == HIGH) {
-    selectedEffect++;
-    EEPROM.put(0, selectedEffect);
     asm volatile ("  jmp 0");
   }
 }

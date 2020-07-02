@@ -1,6 +1,9 @@
-volatile int count = 0;
+// https://github.com/rocketscream/Low-Power
+#include "LowPower.h"
+
+volatile int inactivity_sec= 0;
 #define BUTTON 2
-#define INACTIVITY_MAX_SEC = 10
+#define INACTIVITY_MAX_SEC 30
 
 void setup() {
   Serial.begin(9600);
@@ -37,16 +40,23 @@ void setup() {
 // Interrupt is called once a second
 SIGNAL(TIMER1_COMPA_vect) 
 {
-  count = count + 1;
+  inactivity_sec = min(INACTIVITY_MAX_SEC, inactivity_sec + 1);
 } 
 
 void changeEffect() {
-  count = 0;
+  inactivity_sec = 0;
 }
 
 
 void loop() {
   // put your main code here, to run repeatedly:
-  Serial.println(count); 
-  delay(1000);
+  if (inactivity_sec < INACTIVITY_MAX_SEC) {
+    Serial.println(inactivity_sec); 
+    delay(500);    
+  } else {
+    // Sleep
+    // Enter power down state with ADC and BOD module disabled.
+    // Wake up when wake up pin is low.
+    LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF); 
+  }
 }
