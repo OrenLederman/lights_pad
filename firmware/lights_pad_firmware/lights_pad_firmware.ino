@@ -1,6 +1,4 @@
 #include <Adafruit_NeoPixel.h>
-#include <EEPROM.h>
-
 // https://github.com/rocketscream/Low-Power
 #include "LowPower.h"
 
@@ -69,14 +67,6 @@ SIGNAL(TIMER1_COMPA_vect)
 
 void loop() {
   selectedEffect =  random(EFFECTS);
-
-  // Show effect num
-  //for (int i=0; i<=selectedEffect ; i++) {
-  //    strip.setPixelColor(i, 255, 0, 255);
-  //}
-  //strip.show();
-  //delay(2000);
-
   switch(selectedEffect) {
     
     case 0  : {
