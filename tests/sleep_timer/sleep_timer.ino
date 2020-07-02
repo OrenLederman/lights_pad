@@ -3,7 +3,7 @@
 
 volatile int inactivity_sec= 0;
 #define BUTTON 2
-#define INACTIVITY_MAX_SEC 30
+#define INACTIVITY_MAX_SEC 10
 
 void setup() {
   Serial.begin(9600);
@@ -41,6 +41,12 @@ void setup() {
 SIGNAL(TIMER1_COMPA_vect) 
 {
   inactivity_sec = min(INACTIVITY_MAX_SEC, inactivity_sec + 1);
+  // Sleep
+  // Enter power down state with ADC and BOD module disabled.
+  // Wake up when wake up pin is low.
+  if (inactivity_sec >= INACTIVITY_MAX_SEC) {
+    LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF); 
+  }
 } 
 
 void changeEffect() {
@@ -50,13 +56,6 @@ void changeEffect() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  if (inactivity_sec < INACTIVITY_MAX_SEC) {
-    Serial.println(inactivity_sec); 
-    delay(500);    
-  } else {
-    // Sleep
-    // Enter power down state with ADC and BOD module disabled.
-    // Wake up when wake up pin is low.
-    LowPower.powerDown(SLEEP_FOREVER, ADC_OFF, BOD_OFF); 
-  }
+ Serial.println(inactivity_sec); 
+ delay(500);    
 }
