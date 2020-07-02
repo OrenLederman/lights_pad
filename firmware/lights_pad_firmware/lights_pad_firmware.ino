@@ -5,12 +5,14 @@
 #define NUM_LEDS 93
 #define PIN 6
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(NUM_LEDS, PIN, NEO_GRB + NEO_KHZ800);
+const int NEOPIXEL_BRIGHTNESS_LOW = 50;
 
 #define BUTTON 2
 #define EFFECTS 13
 
 volatile int inactivity_sec= 0;
-#define INACTIVITY_MAX_SEC 10
+#define INACTIVITY_MAX_SEC 120
+
 
 byte selectedEffect=0;
 
@@ -37,6 +39,7 @@ void setup()
   
   /****** Setup leds *****/
   strip.begin();
+  strip.setBrightness(NEOPIXEL_BRIGHTNESS_LOW);
   strip.show(); // Initialize all pixels to 'off'
 
   /****** Button *****/
@@ -56,7 +59,7 @@ SIGNAL(TIMER1_COMPA_vect)
     // turn off lights
     strip.clear();
     strip.show();
-    delay(100);
+
     // Sleep
     // Enter power down state with ADC and BOD module disabled.
     // Wake up when wake up pin is low.
